@@ -54,3 +54,83 @@ Gradle은 의존관계가 있는 라이브러리를 함께 다운로드 한다.
         - mockito: 모킹 라이브러리
         - assertj: 테스트 코드 작성을 좀 더 편하게 도와주는 라이브러리
         - spring-test: 스프링 통합 테스트 지원
+
+### Spring boot 메뉴얼과 튜토리얼 참고하기
+
+- 스프링 공식 튜토리얼: [https://spring.io/guides/gs/serving-web-content/](https://spring.io/guides/gs/serving-web-content/)
+- 스프링 부트 메뉴얼: [https://spring.io/projects/spring-boot#learn](https://spring.io/projects/spring-boot#learn)
+
+## 3. Welcome Page 만들기
+
+- Spring boot의 Welcome Page
+
+    resources:static/index.html 파일이 웰컴 페이지 역할을 수행
+
+    ```jsx
+    <!DOCTYPE HTML>
+      <html>
+      <head>
+          <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> </head>
+      <body>
+      Hello
+      <a href="/hello">hello</a>
+      </body>
+      </html>
+    ```
+
+- thymeleaf 템플릿 엔진
+
+    html을 베이스로 하되, for loop와 같은 기능을 통해 html 파일을 생성할 수 있도록 해줌
+
+- Hello Page
+    - Hello Controller
+
+    ```jsx
+    @Controller
+    public class HelloController {
+
+    	@GetMapping("hello") // [GET]http://host/hello 으로 맵핑
+    	public String hello(Model model) {
+    		model.addAttribute("data", "hello"); // data 애트리뷰트의 값은 hello
+    		return "hello"; // resources:templates/hello.html 파일을 렌더링
+    	}
+    }
+    ```
+
+    - hello.html
+
+    ${변수명} 은 렌더링 해주는 Controller에서 addAttribute 메소드를 통해 모델에 설정된 속성 값
+
+    ```jsx
+    <!DOCTYPE HTML>
+    <html xmlns:th="http://www.thymeleaf.org"> <head>
+          <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> </head>
+    <body>
+    <p th:text="'안녕하세요. ' + ${data}">
+    	안녕하세요. 손님
+    </p>
+    </body>
+    </html>
+    ```
+
+    - thymeleaf 템플릿 엔진 동작 확인
+
+        실행: http://localhost:8080/hello
+
+        [동작 환경 그림]
+
+        ![그림](./템플릿엔진동작그림.png)
+
+        - Controller의 return String → viewResolver 가 화면을 랜더링
+            - 스프링 부트에서 기본적인 탬플릿 엔진의 View Name 맵핑 구조
+
+                return {viewName:String};
+
+                → `resources:templates/`{viewName}`.html`
+
+### Spring Boot Devtools
+
+- 스프링 부트 앱의 재시작 없이 html 리컴파일로 View 변경사항의 실시간 적용을 가능하게 하는 라이브러리
+    - IntelliJ IDEA에서 html 리컴파일: 메뉴 → build → Recompile
