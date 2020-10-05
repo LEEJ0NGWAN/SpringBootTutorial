@@ -134,3 +134,30 @@ Gradle은 의존관계가 있는 라이브러리를 함께 다운로드 한다.
 
 - 스프링 부트 앱의 재시작 없이 html 리컴파일로 View 변경사항의 실시간 적용을 가능하게 하는 라이브러리
     - IntelliJ IDEA에서 html 리컴파일: 메뉴 → build → Recompile
+
+
+## 4. 빌드 및 실행
+
+터미널에서 다음의 명령어를 실행
+
+```jsx
+// 프로젝트의 루트 폴더에 위치한다고 가정
+// 프로젝트 빌드
+./gradlew build
+
+// 빌드된 jar 파일이 있는 곳으로 이동
+cd ./build/libs
+
+// java로 빌드된 jar파일 실행
+java -jar 프로젝트이름-x.x.x-SNAPSHOT.jar //빌드에 따른 버전 다름
+```
+
+빌드 클리닝
+
+```jsx
+// build 폴더 지우기
+./gradlew clean
+
+// build 폴더 싹 지운 후, 다시 빌드
+./gradlew clean build
+```
