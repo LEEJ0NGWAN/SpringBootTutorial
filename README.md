@@ -121,7 +121,7 @@ Gradle은 의존관계가 있는 라이브러리를 함께 다운로드 한다.
 
         [동작 환경 그림]
 
-        ![그림](./템플릿엔진동작그림.png)
+        ![그림](./image/템플릿엔진동작그림.png)
 
         - Controller의 return String → viewResolver 가 화면을 랜더링
             - 스프링 부트에서 기본적인 탬플릿 엔진의 View Name 맵핑 구조
@@ -161,3 +161,36 @@ java -jar 프로젝트이름-x.x.x-SNAPSHOT.jar //빌드에 따른 버전 다름
 // build 폴더 싹 지운 후, 다시 빌드
 ./gradlew clean build
 ```
+
+## 스프링 웹 개발 기초
+
+### 1. 정적 컨텐츠
+
+스프링 부트 컨트롤러에서 별도의 조작이 없으며, 클라이언트로부터 리퀘스트가 오자마자 바뀌지 않는 정적 자원(파일)을 클라이언트로 즉시 반환해주는 서버 리스폰스 형식
+
+h`resources:static/` 밑에 파일을 위치시키면, 스프링 부트에서는 각 파일의 이름으로 정적컨텐츠를 인식
+
+- `resources:static/hello-static.html`
+
+```jsx
+<!DOCTYPE HTML>
+  <html>
+  <head>
+      <title>static content</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> </head>
+<body>
+정적 컨텐츠 입니다.
+  </body>
+</html>
+
+```
+
+실행: http://localhost:8080/hello-static.html
+
+[정적 컨텐츠 동작 원리]
+
+![그림](./image/정적컨텐츠동작그림.png)
+
+- 클라이언트로 부터 요청이 올 때,
+    1. 먼저, 스프링 부트에 해당 요청을 처리하는 컨트롤러가 있는지 검사
+    2. 없다면 static 폴더 내부의 정적 컨텐츠를 확인하여 클라이언트 리스폰스로 보내줌
