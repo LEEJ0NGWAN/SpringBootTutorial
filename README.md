@@ -121,7 +121,7 @@ Gradle은 의존관계가 있는 라이브러리를 함께 다운로드 한다.
 
         [동작 환경 그림]
 
-        ![그림](./image/template.png)
+        ![template](./image/template.png)
 
         - Controller의 return String → viewResolver 가 화면을 랜더링
             - 스프링 부트에서 기본적인 탬플릿 엔진의 View Name 맵핑 구조
@@ -189,8 +189,117 @@ java -jar 프로젝트이름-x.x.x-SNAPSHOT.jar //빌드에 따른 버전 다름
 
 [정적 컨텐츠 동작 원리]
 
-![그림](./image/static.png)
+![static](./image/static.png)
 
 - 클라이언트로 부터 요청이 올 때,
     1. 먼저, 스프링 부트에 해당 요청을 처리하는 컨트롤러가 있는지 검사
     2. 없다면 static 폴더 내부의 정적 컨텐츠를 확인하여 클라이언트 리스폰스로 보내줌
+
+### MVC와 템플릿 엔진
+
+- MVC?
+
+    Model, View, Controller라는 컴포넌트를 정의하는 소프트웨어 디자인 패턴의 약칭
+
+    ![mvc-pattern](./image/mvc-pattern.png)
+
+- Model
+
+    애플리케이션의 정보 및 데이터를 나타내는 컴포넌트
+
+    데이터베이스, 상수, 초기값, 변수 등 애플리케이션을 구성하는 모든 데이터를 포함
+
+    또는 그 데이터들의 가공 담당
+
+    Model의 규칙
+
+    1. 사용자가 변경하려는 모든 데이터를 포함할 것
+    2. View, Controller의 어떤 정보도 모르며, 독립되어 있을 것
+
+        모델은 재사용이 가능하고, 다른 인터페이스에 영향을 받으면 안됨
+
+    3. 데이터의 변경 시, 변경을 적용하는 처리방법을 구현할 것
+
+        변경이 발생하면 이벤트를 발생시키거나, 수신할 수 있는 방법이 구현되어야 함
+
+- View
+
+    애플리케이션의 정보와 데이터를 사용자가 볼 수 있도록 출력하는 컴포넌트
+
+    View의 규칙
+
+    1. 모델이 가지고 있는 정보를 별도로 저장하지 말 것
+
+        모델로부터 전달받은 정보를 유지하기 위해, 임의로 뷰 내부에 저장해선 안된다
+
+    2. Model, Controller의 어떤 정보도 모르며, 독립되어 있을 것
+
+        다른 컴포넌트가 어떻게 동작하는지 알아서는 안된다.
+
+        전달받은 데이터를 출력만하는 수동적인 역할만을 수행할 것
+
+        또, 재사용이 가능하고, 정보의 표현에 있어 쉽도록 설계 되어야 함
+
+    3. 데이터의 변경 시, 변경을 적용하는 처리방법을 구현할 것
+
+        사용자가 출력된 내용의 변경을 시도할 때, 이벤트를 모델로 전달할 수 있어야 한다.
+
+- Controller
+
+    데이터와 사용자 인터페이스 요소들을 잇는 다리 역할을 하는 컴포넌트
+
+    사용자가 데이터를 조작하는 것에 대한 이벤트들을 처리
+
+    Controller의 규칙
+
+    1. 서로의 존재를 모르는 모델과 뷰의 중재를 위해, 컨트롤러는 모델과 뷰의 존재를 숙지할 것
+
+        모델과 뷰는 데이터 변경 이벤트를 외부로 알리거나, 외부에서 수신하는 방법만 가짐
+
+    2. 모델과 뷰의 변경 이벤트를 해석해서 각자 목표 컴포넌트로 전달해줄 것
+
+        또, 애플리케이션의 메인 로직은 컨트롤러가 담당하게 된다.
+
+- Hello MVC
+    - HelloController
+
+        hello-mvc의 GET 맵핑 추가
+
+        ```jsx
+        @Controller
+        public class HelloController {
+        		// 기존 맵핑 [GET] hello
+            @GetMapping("hello")
+            public String hello(Model model) {
+                model.addAttribute("data", "hello");
+                return "hello"; // resources:templates/hello.html
+            }
+
+        		// 추가 맵핑 [GET] hello-mvc
+            @GetMapping("hello-mvc")
+            public String helloMVC(@RequestParam("name") String name, Model model) {
+                model.addAttribute("name", name);
+                return "hello-template";
+            }
+        }
+        ```
+
+        @RequestParam : 해당 맵핑에 리퀘스트 패러매터를 설정해줌
+
+        (default required 값은 true → 즉, 파라매터를 안넘겨주면 오류가 발생하게 됨)
+
+    - hello-template.html
+
+        ```jsx
+        <html xmlns:th="http://www.thymeleaf.org"> <body>
+        <p th:text="'hello ' + ${name}">hello! empty</p> </body>
+        </html>
+        ```
+
+        타임리프 탬플릿 엔진을 이용하는 템플릿 파일
+
+        → name이라는 키의 값을 컨트롤러에서 받아오지 못하면 default로 설정된 "hello! empty"가 출력됨
+
+    - 동작 확인
+
+        http://localhost:8080/hello-mvc?name=spring
