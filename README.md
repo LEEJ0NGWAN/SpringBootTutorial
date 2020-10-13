@@ -303,3 +303,86 @@ java -jar 프로젝트이름-x.x.x-SNAPSHOT.jar //빌드에 따른 버전 다름
     - 동작 확인
 
         http://localhost:8080/hello-mvc?name=spring
+    
+    ### API
+    
+    MVC 패턴의 컨트롤러처럼 템플릿 엔진을 통해서 렌더링된 HTML을 리스폰스로 전달하지 않고,
+    
+    스트링이나 객체를 시리얼라이징하여 HTML 바디에 내용을 직접 반환하는 형식
+    
+    기존 MVC 패턴에서 렌더링 HTML 뷰를 반환하는 컨트롤러와 다르게
+    
+    추가적인 애노테이션 `@ResponseBody` 이 요구된다
+    
+    - Hello String
+        - Hello Controller
+    
+            [GET] hello-string 맵핑 추가
+    
+            ```jsx
+            @GetMapping("hello-string")
+            @ResponseBody
+            public String helloString(@RequestParam("name") String name) {
+            	return "hello " + name;
+            }
+            ```
+    
+            `@ResponseBody` 애노테이션 때문에, 템플릿 엔진으로 렌더링 된 HTML 대신에 단순한 스트링이 반환
+    
+        - 실행
+    
+            http://localhost:8080/hello-string?name=spring
+    
+    - Hello API
+        - Hello Controller
+    
+            [GET] hello-api 맵핑과 반환하려는 객체 Hello 추가
+    
+            ```jsx
+            // 시리얼라이징을 통해 HTTP 바디로 변환될 객체 Hello
+            static class Hello {
+            	private String name;
+    
+            	public String getName() {
+            		return name;
+            	}
+    
+            	public void setName(String name) {
+            		this.name = name;
+            	}
+            }
+    
+            @GetMapping("hello-api")
+            @ResponseBody
+            public Hello helloAPI(@RequestParam("name") String name) {
+            	Hello hello = new Hello();
+            	hello.setName(name);
+            	return hello;
+            }
+            ```
+    
+            `@ResponseBody` 애노테이션 때문에, Hello 객체는 JSON으로 시리얼라이징되어 반환
+    
+        - 실행
+    
+            http://localhost:8080/hello-api?name=spring
+    
+    [ResponseBody 동작 원리]
+    
+    ![responsebody](./image/responsebody.png)
+    
+    컨트롤러에서 `ResponseBody` 애노테이션을 사용하면
+    
+    - HTTP 바디에 return 데이터를 직접 반환
+    - `viewResolver` 대신에 `HttpMessageConverter`가 컨트롤러의 return 데이터를 처리
+    
+    return 데이터 타입에 스프링에서 기본으로 채택하고 있는 라이브러리
+    
+    - String: `StringHttpMessageConverter`
+    - Object: `MappingJackson2HttpMessageConverter`
+    
+        객체는 기본적으로 JSON 데이터로 반환됨 (XML로 바꿀 수도 있으나 현재는 찾아보기 힘든 추세)
+    
+        - Java 객체를 JSON 형식으로 시리얼라이징하는 라이브러리 중 대표 라이브러리
+            - Gson
+            - Jackson
