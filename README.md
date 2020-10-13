@@ -369,7 +369,7 @@ java -jar 프로젝트이름-x.x.x-SNAPSHOT.jar //빌드에 따른 버전 다름
     
     [ResponseBody 동작 원리]
     
-    ![responsebody](./image/responsebody.png)
+    ![responseBody](./image/responseBody.png)
     
     컨트롤러에서 `ResponseBody` 애노테이션을 사용하면
     
