@@ -1,4 +1,4 @@
-package com.example.springtutorial.contoller;
+package com.example.springboottutorial.contoller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
