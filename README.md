@@ -1,4 +1,4 @@
-# SpringTutorial
+# SpringBootTutorial
 
 ## 1. 프로젝트 생성
 
@@ -16,7 +16,7 @@
     - Language → Java
     - Packaging → jar
     - groupId → com.example
-    - artifactId → spring-tutorial
+    - artifactId → spring-boot-tutorial
     - dependencies
         - Spring-Web
         - Tyhmeleaf (HTML 탬플릿 엔진)
